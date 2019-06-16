@@ -31,6 +31,7 @@ namespace UploadFileDemo
             services.Configure<PhotoSettings>(Configuration.GetSection("PhotoSettings"));
             services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +48,8 @@ namespace UploadFileDemo
             }
 
             //app.UseHttpsRedirection();
+            app.UseStaticFiles("/wwwroot");
+            app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             app.UseMvc();
         }
     }

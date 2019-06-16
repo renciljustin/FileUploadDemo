@@ -1,0 +1,22 @@
+<h1 class="display-4">Photo Gallery</h1>
+
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <div class="form-group">
+      <input *ngIf="!progress.percentage" #fileInput type="file" name="uploadPhoto" id="uploadPhoto" class="form-control-file">
+    </div>
+    <div class="progress">
+      <div *ngIf="progress.percentage" class="progress-bar" [style.width]="progress.percentage+'%'"></div>
+    </div>
+    <div *ngIf="progress.percentage" class="upload-progress">
+      <strong>Uploading...</strong> {{progress.loaded}}/{{progress.total}} ({{progress.percentage+'%'}})
+    </div>
+    <button *ngIf="!progress.percentage" class="btn btn-primary btn-lg" (click)="onUpload()">Upload</button>
+  </div>
+</div>
+
+<div class="row">
+  <div *ngFor="let photo of photos" class="col-lg-3 col-md-4 col-sm-2">
+    <img src="http://localhost:5000/wwwroot/uploads/{{photo.fileName}}" [alt]="photo.fileName" class="img-thumbnail">
+  </div>
+</div>

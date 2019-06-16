@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,13 +32,31 @@ namespace UploadFileDemo.Controllers
         public async Task<IActionResult> GetPhotos()
         {
             var photos = await _context.Photos.ToListAsync();
+
             return Ok(photos);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPhotos(int id)
+        {
+            var file = await _context.Photos.FindAsync(id);
+
+            if (file is null)
+                return BadRequest("Invalid ID.");
+
+            var uploadsFolderPath = Path.Combine(_hosting.ContentRootPath, "contents", "uploads");
+
+            var stream = System.IO.File.OpenRead(Path.Combine(uploadsFolderPath, file.FileName));
+
+            var photo = File(stream, $"image/{Path.GetExtension(file.FileName).Replace(".", string.Empty)}");
+
+            return photo;
         }
 
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            var uploadsFolderPath = Path.Combine(_hosting.ContentRootPath, "contents", "uploads");
+            var uploadsFolderPath = Path.Combine(_hosting.ContentRootPath, "wwwroot", "uploads");
 
             if (!Directory.Exists(uploadsFolderPath))
                 Directory.CreateDirectory(uploadsFolderPath);
